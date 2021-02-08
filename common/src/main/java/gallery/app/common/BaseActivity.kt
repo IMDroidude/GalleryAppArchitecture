@@ -1,0 +1,18 @@
+package gallery.app.common
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
+
+abstract class BaseActivity<DB:ViewDataBinding,VM:ViewModel>(val resLayoutID:Int) : AppCompatActivity(resLayoutID){
+
+    protected lateinit var mBinding: DB
+    protected abstract val mViewModel: VM
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mBinding = DataBindingUtil.setContentView(this,resLayoutID)
+    }
+}
