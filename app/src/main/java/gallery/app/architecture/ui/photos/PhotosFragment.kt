@@ -59,7 +59,7 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding,PhotosFragmentViewMode
 
     private fun initRecyclerView() {
         mBinding.recyclerView.apply {
-            ///setHasFixedSize(true)
+            setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = photoListAdapter
         }

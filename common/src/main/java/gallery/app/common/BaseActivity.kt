@@ -14,5 +14,6 @@ abstract class BaseActivity<DB:ViewDataBinding,VM:ViewModel>(val resLayoutID:Int
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this,resLayoutID)
+        mBinding.lifecycleOwner = this
     }
 }
