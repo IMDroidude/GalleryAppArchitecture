@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/Theme.GalleryAppArchitecture">
-        <activity android:name=".MainActivity" android:launchMode="singleTop"
+
+        <activity android:name=".main.PhotoActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
@@ -25,11 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".test.TestActivity"
-            android:screenOrientation="portrait">
-
-
         </activity>
     </application>
 

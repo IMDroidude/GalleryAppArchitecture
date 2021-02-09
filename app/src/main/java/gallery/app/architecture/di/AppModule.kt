@@ -10,6 +10,7 @@ import gallery.app.architecture.data.extractor.NetworkJobExecutor
 import gallery.app.architecture.domain.executer.UiThreadExecutor
 import javax.inject.Singleton
 
+// FIXME: 2/10/21 delete this component 
 @Module
 @InstallIn(ActivityComponent::class)
 abstract class AppModule {

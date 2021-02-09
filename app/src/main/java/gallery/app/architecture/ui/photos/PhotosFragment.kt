@@ -85,7 +85,7 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding,PhotosFragmentViewMode
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.search_menu, menu)
 
         // Get the SearchView and set the searchable configuration
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
