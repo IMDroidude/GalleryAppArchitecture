@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GalleryAppArchitecture</string>
+    <string name="views">views</string>
+    <string name="downloads">downloads</string>
+    <string name="likes">likes</string>
+    <string name="search_filter_default_value">Flowers</string>
+    <string name="search_view_hint">Search photos</string>
 </resources>

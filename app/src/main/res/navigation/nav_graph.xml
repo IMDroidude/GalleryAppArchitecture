@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/photosFragment">
+    <fragment android:id="@+id/photosFragment"
+        android:name="gallery.app.architecture.ui.photos.PhotosFragment"
+        tools:layout="@layout/fragment_photos">
+        <action android:id="@+id/action_photosFragment_to_photoDetailFragment"
+            app:destination="@id/photoDetailFragment" app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment android:id="@+id/photoDetailFragment"
+        android:name="gallery.app.architecture.ui.photos.PhotoDetailFragment"
+        tools:layout="@layout/fragment_photo_detail">
+        <argument android:name="imageUrl" app:argType="string"/>
+        <argument android:name="userName" app:argType="string"/>
+        <argument android:name="tags" app:argType="string"/>
+    </fragment>
+</navigation>
+    <!--
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/photosFragment">
+    <fragment android:id="@+id/photosFragment"
+        android:name="gallery.app.architecture.ui.photos.PhotosFragment"
+        tools:layout="@layout/fragment_photos">
+        <action android:id="@+id/action_photosFragment_to_photoDetailFragment"
+            app:destination="@id/photoDetailFragment" app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment android:id="@+id/photoDetailFragment"
+        android:name="gallery.app.architecture.ui.photos.PhotoDetailFragment"
+        tools:layout="@layout/fragment_photo_detail">
+        <argument android:name="imageUrl" app:argType="string"/>
+        <argument android:name="userName" app:argType="string"/>
+        <argument android:name="tags" app:argType="string"/>
+    </fragment>
+</navigation>-->

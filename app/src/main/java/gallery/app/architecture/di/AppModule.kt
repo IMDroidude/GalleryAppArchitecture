@@ -1,15 +1,17 @@
 package gallery.app.architecture.di
 
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import de.joyn.myapplication.domain.executer.PostExecutionThread
+import de.joyn.myapplication.domain.executer.UseCaseExecutor
+import gallery.app.architecture.data.extractor.NetworkJobExecutor
+import gallery.app.architecture.domain.executer.UiThreadExecutor
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityComponent::class)
-class AppModule {
+abstract class AppModule {
 
-    /*@Provides
-    fun providePrefContext(@ApplicationContext context: Context): PrefStoreImpl {
-        return PrefStoreImpl(context)
-    }*/
 }
