@@ -27,13 +27,13 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding,PhotosFragmentViewMode
 
     private fun onPhotoClicked(photo: Models.PhotoResponse) {
         view?.let {
-            /*Navigation.findNavController(it).navigate(
+            Navigation.findNavController(it).navigate(
                 PhotosFragmentDirections.actionPhotosFragmentToPhotoDetailFragment(
                     photo.previewImageUrl,
                     photo.userName,
                     photo.tags
                 )
-            )*/
+            )
         }
     }
 
