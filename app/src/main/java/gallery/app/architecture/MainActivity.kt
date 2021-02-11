@@ -13,12 +13,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import gallery.app.architecture.databinding.ActivityMainBinding
 import gallery.app.architecture.main.MainViewModel
 import gallery.app.common.BaseActivity
+import gallery.app.common.utils.viewBinding
 
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.activity_main) {
     override val mViewModel: MainViewModel by viewModels()
-
+    ///private val binding by viewBinding(ActivityMainBinding::inflate)
 
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -7,7 +7,7 @@ sealed class Models {
     data class BasePhoto(@SerializedName("totalHits") val totalHits: Int,
                          @SerializedName("total") val total: Int,
                          @SerializedName("hits") val response: List<PhotoResponse>
-                      )
+                      ): Models()
 
     data class PhotoResponse(@SerializedName("id") val id: String ="",
                              @SerializedName("user") val userName: String = "",
@@ -18,5 +18,5 @@ sealed class Models {
                              @SerializedName("views") val viewNumber: String= "",
                              @SerializedName("likes") val likeNumber: String= "",
                              @SerializedName("tags") val tags: String= "",
-                             @SerializedName("downloads") val downloadNumber: String= "")
+                             @SerializedName("downloads") val downloadNumber: String= "") : Models()
 }

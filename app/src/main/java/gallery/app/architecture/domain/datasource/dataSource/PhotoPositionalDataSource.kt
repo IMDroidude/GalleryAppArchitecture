@@ -1,4 +1,4 @@
-package de.joyn.myapplication.domain.dataSource
+package gallery.app.architecture.domain.datasource.dataSource
 
 import androidx.paging.PositionalDataSource
 import de.joyn.myapplication.domain.interactor.GetPhotoUseCase
@@ -16,6 +16,9 @@ class PhotoPositionalDataSource @Inject constructor(
 ) : PositionalDataSource<Models.PhotoResponse>(), Disposable {
 
     private var disposing = false
+    private var filter: String = ""
+    val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     override fun isDisposed(): Boolean {
         return disposing
     }
@@ -25,12 +28,9 @@ class PhotoPositionalDataSource @Inject constructor(
         compositeDisposable.clear()
     }
 
-    private var filter: String = ""
     fun setFilter(filter: String) {
         this.filter = filter
     }
-
-    val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private fun computeCount(): Int {
         // actual count code here
