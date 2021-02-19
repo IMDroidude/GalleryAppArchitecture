@@ -3,11 +3,12 @@ package gallery.app.architecture.ui.photos
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.*
 import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -21,6 +22,7 @@ import gallery.app.architecture.R
 import gallery.app.architecture.databinding.FragmentPhotosBinding
 import gallery.app.common.BaseFragment
 import gallery.app.common.utils.viewBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,103 +30,69 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class PhotosFragment : BaseFragment<FragmentPhotosBinding,PhotosFragmentViewModel>(R.layout.fragment_photos),
-    SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener, LifecycleObserver {
     override val mViewModel: PhotosFragmentViewModel by viewModels()
-    ///private val binding by viewBinding(FragmentPhotosBinding::bind)
 
-    private lateinit var adapter: PhotoCollectionAdapter
-    /*private val clickListener: ClickListener = this::onPhotoClicked
-    private fun onPhotoClicked(photo: Models.PhotoResponse) {
-        view?.let {
-            Navigation.findNavController(it).navigate(
-                PhotosFragmentDirections.actionPhotosFragmentToPhotoDetailFragment(
-                    photo.previewImageUrl,
-                    photo.userName,
-                    photo.tags
-                )
-            )
-        }
-    }
+    private lateinit var photoAdapter: PhotoCollectionAdapter
 
-    private val photoListAdapter = PhotoAdapter(clickListener)
-*/
-    override fun onStart() {
-        super.onStart()
-        startObserving()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.lifecycle?.addObserver(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        //initRecyclerView()
-        mViewModel.setFilter(getString(R.string.search_filter_default_value))
-
+        ///mViewModel.setFilter(getString(R.string.search_filter_default_value))
         initAdapter()
-        /*mViewModel.popularPhotos.observe(viewLifecycleOwner,{
-            adapter.submitData(viewLifecycleOwner.lifecycle,it)
-        })*/
-        lifecycleScope.launch {
-            /*mViewModel.fetchPhotoCollection().collect {
-                adapter.submitData(it)
-            }*/
-        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreated(){
+        mViewModel.trendingPhotos.observe(viewLifecycleOwner, Observer {
+            photoAdapter.submitData(lifecycle,it)
+        })
     }
 
     private fun initAdapter() {
-        adapter = PhotoCollectionAdapter()
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        photoAdapter = PhotoCollectionAdapter()
+        photoAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-        mBinding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        mBinding.recyclerView.adapter = adapter/*.withLoadStateHeaderAndFooter(
-            ItemLoadStateAdapter(adapter::retry),
-            ItemLoadStateAdapter(adapter::retry)
-        )*/
-        mBinding.recyclerView.setHasFixedSize(true)
+        mBinding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = photoAdapter
+        }
 
-        adapter.addLoadStateListener { loadState ->
+        photoAdapter.addLoadStateListener { loadState ->
             mBinding.recyclerView.isVisible = loadState.refresh is LoadState.NotLoading
-            ///binding.progressBar.isVisible = loadState.refresh is LoadState.Loading
-            ///binding.btnRetry.isVisible = loadState.refresh is LoadState.Error
 
             val errorState = loadState.source.append as? LoadState.Error
                 ?: loadState.source.prepend as? LoadState.Error
                 ?: loadState.append as? LoadState.Error
                 ?: loadState.prepend as? LoadState.Error
             errorState?.let {
-                /*toast(requireContext(), it.error.toString())
-                it.error.log()*/
             }
         }
     }
-    protected fun startObserving() {
-        /*mViewModel.stateLiveData.observe(requireActivity(),{
-            render(it)
-        })*/
-    }
 
-    /*private fun initRecyclerView() {
-        mBinding.recyclerView.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = photoListAdapter
-        }
-    }*/
-
-    /*private fun render(pagedPhotoList: PagedList<Models.PhotoResponse>) {
-        photoListAdapter.submitList(pagedPhotoList)
-        Timber.d("pagedPhotoList : %s", pagedPhotoList)
-    }*/
-
+    var timer: CountDownTimer? = null
     override fun onQueryTextSubmit(p0: String?): Boolean = false
     override fun onQueryTextChange(newText: String?): Boolean {
-        Timber.d("query : %s", newText)
-        if (newText!!.trim().replace(" ", "").length >= 3 || newText!!.isEmpty()) {
-            mViewModel.cachedFilter = newText
-            mViewModel.setFilter(newText!!)
-            ///mViewModel.createLiveData()
-            startObserving()
 
-        }
+        timer?.cancel()
+        timer = object : CountDownTimer(1000, 2500) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                Timber.d("query : %s", newText)
+                if (newText!!.trim().replace(" ", "").length >= 3) {
+                    mViewModel.cachedFilter = newText
+                    mViewModel.setFilter(newText)
+                }
+                ///afterTextChanged.invoke(editable.toString())
+            }
+        }.start()
+
         return true
     }
 

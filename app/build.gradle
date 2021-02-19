@@ -66,22 +66,25 @@ dependencies {
     ///implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
 
     // old paging
-    implementation "android.arch.paging:runtime:$version_lifecycle_extensions"
+    ///implementation "android.arch.paging:runtime:$version_lifecycle_extensions"
+    implementation "androidx.paging:paging-runtime:$version_paging"
+    implementation "androidx.paging:paging-rxjava3:$version_paging"
 
     //Rxjava
-    implementation "io.reactivex.rxjava2:rxjava:2.2.12"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.20"
     implementation "io.reactivex.rxjava2:rxandroid:$version_rxandroid"
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.8.1"
+    ///implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     implementation "com.squareup.retrofit2:converter-gson:$version_retrofit"
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
 
     implementation project(path: ':common')
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

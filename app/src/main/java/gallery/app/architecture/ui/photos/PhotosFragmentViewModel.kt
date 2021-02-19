@@ -2,8 +2,11 @@ package gallery.app.architecture.ui.photos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import androidx.paging.rxjava3.cachedIn
+import androidx.paging.rxjava3.flowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gallery.app.architecture.domain.datasource.dataSource.PhotoDataSourceFactory
 import de.joyn.myapplication.network.dto.Models
@@ -11,6 +14,7 @@ import gallery.app.architecture.common.BaseViewModel
 import gallery.app.architecture.domain.datasource.dataSource.PhotoPagingSource
 import gallery.app.architecture.network.RestApi
 import gallery.app.architecture.repository.Repository
+import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -22,63 +26,34 @@ private const val INITIAL_LOAD_SIZE_HINT = 40
 
 @HiltViewModel
 class PhotosFragmentViewModel @Inject constructor(
-    //private val dataSourceFactory: PhotoDataSourceFactory,
-    private val photoPagingSource: PhotoPagingSource,
-    private val restApi: RestApi,
-    private val repository: Repository
+    private val photoPagingSourceRx: PhotoPagingSourceRx
 ): BaseViewModel() {
 
-    ///var stateLiveData: LiveData<PagedList<Models.PhotoResponse>> = MutableLiveData()
+    private val _trendingPhotos = MutableLiveData<PagingData<Models.PhotoResponse>>()
+    val trendingPhotos: LiveData<PagingData<Models.PhotoResponse>>
+    get() = _trendingPhotos
     var cachedFilter: String = ""
 
     fun setFilter(filter: String) {
-        //photoPagingSource.setFilter(if (cachedFilter.isEmpty()) filter else cachedFilter)
-        //dataSourceFactory.setFilter(if (cachedFilter.isEmpty()) filter else cachedFilter)
+        photoPagingSourceRx.setFilter(if (cachedFilter.isEmpty()) filter else cachedFilter)
     }
 
     init {
         viewModelScope.launch {
+            getPhotosRx().cachedIn(viewModelScope).subscribe {
+                    _trendingPhotos.value = it
+            }
         }
     }
 
-    /*val popularPhotos = Pager(
-        config = PagingConfig(
-            pageSize = 20,
-            maxSize = 100,
-            enablePlaceholders = false
-        ),
-        pagingSourceFactory = { PhotoPagingSource(restApi) }
-    ).liveData.cachedIn(viewModelScope)*/
-
-
-    fun fetchPhotoCollection() : Flow<PagingData<Models.PhotoResponse>> {
-        return Pager(PagingConfig(PAGE_SIZE)) { photoPagingSource }
-            .flow.cachedIn(viewModelScope)
-            /*.map { pagingData ->
-                pagingData
-                    // Convert network model to local model
-                    .map { movie -> Models of movie }
-                    // Also, if required, filter out adult content
-                    .run {
-                        *//*if (!showExplicit) {
-                            filter { movie -> !movie.adult }
-                        } else {
-                            this
-                        }*//*
-                    }
-            }*/
+    private fun getPhotosRx(): Flowable<PagingData<Models.PhotoResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                prefetchDistance = 5
+            ),
+            pagingSourceFactory = { photoPagingSourceRx }
+        ).flowable
     }
-
-    init {
-        //createLiveData()
-    }
-
-    /*fun createLiveData() {
-        val pagedListConfig = PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
-            .setInitialLoadSizeHint(INITIAL_LOAD_SIZE_HINT)
-            .setPageSize(PAGE_SIZE)
-            .build()
-        this.stateLiveData = LivePagedListBuilder(dataSourceFactory, pagedListConfig).build();
-    }*/
 }

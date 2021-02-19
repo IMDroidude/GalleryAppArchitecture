@@ -2,9 +2,7 @@ package gallery.app.architecture.domain.datasource.dataSource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import de.joyn.myapplication.domain.interactor.GetPhotoUseCase
 import de.joyn.myapplication.network.dto.Models
-import gallery.app.architecture.domain.entity.PhotoModel
 import gallery.app.architecture.network.RestApi
 import io.reactivex.Single
 import timber.log.Timber
@@ -22,36 +20,17 @@ class PhotoPagingSource @Inject constructor(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Models.PhotoResponse> {
-        val pageNum = params.key ?: 1
-        return fetchResult(pageNum,params.loadSize)
-    }
-
-    suspend fun fetchResult(pageNumber:Int,pageSize:Int):LoadResult<Int,Models.PhotoResponse>{
+        val nextPage = params.key ?: 1
         return suspendCoroutine { continuation ->
-            restApi.getPhotos(filter, pageSize, pageNumber).subscribe({ response ->
-                Timber.d("response : %s", response)
-                continuation.resume(LoadResult.Page(response.response,response.totalHits,response.total))
-            }, {
-                continuation.resume(LoadResult.Error(it))
-            })
-            /*getPhotosUseCase(PhotoModel(filter,pageSize,pageNumber)).subscribe({
-                continuation.resume(LoadResult.Page(it.response,it.totalHits,it.total))
+            restApi.getPhotos(filter,params.loadSize,nextPage).subscribe({
+                continuation.resume(LoadResult.Page(it.response,nextPage,it.totalHits + 1))
             },{
                 continuation.resume(LoadResult.Error(it))
-            })*/
-        }
-    }
-
-    /*fun getPhotosUseCase(param: PhotoModel): Single<Models.BasePhoto> {
-        return Single.create { emitter ->
-            restApi.getPhotos(param.query, param.pageSize, param.pageNum).subscribe({ response ->
-                Timber.d("response : %s", response)
-                emitter.onSuccess(response)
-            }, {
-                emitter.onError(it)
             })
         }
-    }*/
+
+    }
+
     override fun getRefreshKey(state: PagingState<Int, Models.PhotoResponse>): Int? {
         return state.anchorPosition
     }

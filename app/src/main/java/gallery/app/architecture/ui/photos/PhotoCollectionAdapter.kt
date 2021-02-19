@@ -14,6 +14,7 @@ import gallery.app.architecture.common.BaseViewHolder
 import gallery.app.architecture.databinding.ItemPhotoBinding
 
 class PhotoCollectionAdapter : BasePagingAdapter<Models.PhotoResponse>(PhotoCallback) {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
